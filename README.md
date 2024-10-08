@@ -1,6 +1,6 @@
 # COP4533Project
 
-Project Group 1: Brady White, Watthew Dylewski, Neil Patel
+Project Group 1: Brady White, Matthew Dylewski, Neil Patel
 
 Consider the test case below.
 n = 7, W = 10
