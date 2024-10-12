@@ -36,9 +36,16 @@ def program2(n: int, W: int, heights: List[int], widths: List[int]) -> Tuple[int
     platforms = []  # Each entry is (remaining_width, max_height, num_paintings)
     current_platform = [W, 0, 0]  # Initialize the current platform
 
-    for i in range(n):
-        width, height = widths[i], heights[i]
+    is_increasing = False
+    back_counter = 1
+    peak_level_marker = 0
 
+    for i in range(n):
+        if is_increasing == False:
+            width, height = widths[i], heights[i]
+        else:
+            back_counter += 1
+            width, height = widths[n-back_counter], heights[n-back_counter]
         # If the current painting fits within the current platform width limit
         if current_platform[0] >= width:
             current_platform[0] -= width
@@ -46,11 +53,21 @@ def program2(n: int, W: int, heights: List[int], widths: List[int]) -> Tuple[int
             current_platform[2] += 1  # Increase painting count
         else:
             # Save the completed platform and start a new one
-            platforms.append(current_platform)
+            if is_increasing == False:
+                if i > 0 and heights[i] < heights[i+1]:
+                    is_increasing = True
+                    peak_level_marker += 1
+            if is_increasing:
+                platforms.insert(peak_level_marker,current_platform)
+                width, height = widths[n-back_counter], heights[n-back_counter]
+            else:
+                platforms.append(current_platform)
+                peak_level_marker += 1
             current_platform = [W - width, height, 1]
+            
 
-    # Append the last platform
-    platforms.append(current_platform)
+    # Add the last platform
+    platforms.insert(peak_level_marker,current_platform)
 
     # Calculate total height and the number of paintings on each platform
     total_height = sum(platform[1] for platform in platforms)
