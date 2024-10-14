@@ -24,57 +24,47 @@ def program2(n: int, W: int, heights: List[int], widths: List[int]) -> Tuple[int
     # (Note: The heights of the paintings follow a unimodal function with a single local minimum,
     # as in Example 3.)
     ############################
-    #Consider the test case below.
-    #n = 7, W = 10
-    #h = [21, 19, 17, 16, 11, 5, 1]
-    #w = [7, 1, 2, 3, 5, 8, 1]
-    #For a test case like this, the input will be EXACTLY as follows. The first line will contain the values of "n" and "W" separated by a whitespace. The second line will contain the array of "h", with each element separated by a whitespace. Finally, the third line will contain the array of "w", with each element, once again, separated by a white space. This will be the case for all test cases. The sample input is given below.
-    #7 10
-    #21 19 17 16 11 5 1
-    #7 1 2 3 5 8 1
-    # Sort paintings by height in descending order
-    platforms = []  # Each entry is (remaining_width, max_height, num_paintings)
-    current_platform = [W, 0, 0]  # Initialize the current platform
 
-    is_increasing = False
-    back_counter = 1
-    peak_level_marker = 0
+def program2(n: int, W: int, heights: List[int], widths: List[int]) -> Tuple[int, int, List[int]]:
+    painting_count = []  # List to store the number of paintings on each platform
+    current_platform = [W, 0, 0]  # Initialize the current platform [remaining_width, max_height, painting_count]
+    num_platforms = 0  # Counter for the number of platforms used
+    total_height = 0  # Variable to accumulate the total height of platforms
+    is_increasing = False  # Boolean flag to indicate if we're in the "increasing" phase of the unimodal sequence
+    switched = False  # Boolean flag to track when we switch to the increasing phase
 
     for i in range(n):
-        if is_increasing == False:
-            width, height = widths[i], heights[i]
-        else:
-            back_counter += 1
-            width, height = widths[n-back_counter], heights[n-back_counter]
-        # If the current painting fits within the current platform width limit
-        if current_platform[0] >= width:
-            current_platform[0] -= width
-            current_platform[1] = max(current_platform[1], height)  # Update max height for this platform
-            current_platform[2] += 1  # Increase painting count
-        else:
-            # Save the completed platform and start a new one
-            if is_increasing == False:
-                if i > 0 and heights[i] < heights[i+1]:
-                    is_increasing = True
-                    peak_level_marker += 1
-            if is_increasing:
-                platforms.insert(peak_level_marker,current_platform)
-                width, height = widths[n-back_counter], heights[n-back_counter]
-            else:
-                platforms.append(current_platform)
-                peak_level_marker += 1
+        width, height = widths[i], heights[i]  # Get the current painting's width and height
+
+        # Check if we are moving to the "increasing" phase of the unimodal sequence
+        if not is_increasing and i > 0 and height > heights[i - 1] and height > current_platform[1]:
+            is_increasing = True  # We've hit the minimum, now heights will increase
+
+        # Check if the current painting fits on the current platform or if we've just switched to increasing
+        if current_platform[0] < width or (is_increasing and not switched):
+            # If we just switched to increasing, update the `switched` flag
+            if is_increasing and not switched:
+                switched = True
+
+            # Finalize the current platform by adding its height and painting count
+            painting_count.append(current_platform[2])
+            total_height += current_platform[1]
+            num_platforms += 1
+
+            # Start a new platform with the current painting
             current_platform = [W - width, height, 1]
-            
+        else:
+            # If the painting fits, update the platform's remaining width, max height, and painting count
+            current_platform[0] -= width
+            current_platform[1] = max(current_platform[1], height)
+            current_platform[2] += 1
 
-    # Add the last platform
-    platforms.insert(peak_level_marker,current_platform)
+    # Finalize the last platform
+    num_platforms += 1
+    total_height += current_platform[1]
+    painting_count.append(current_platform[2])
 
-    # Calculate total height and the number of paintings on each platform
-    total_height = sum(platform[1] for platform in platforms)
-    num_paintings = [platform[2] for platform in platforms]
-    num_platforms = len(platforms)
-
-    return num_platforms, total_height, num_paintings
+    return num_platforms, total_height, painting_count
     
 if __name__ == '__main__':
     n, W = map(int, input().split())
