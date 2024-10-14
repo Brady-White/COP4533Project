@@ -25,7 +25,6 @@ def program2(n: int, W: int, heights: List[int], widths: List[int]) -> Tuple[int
     # as in Example 3.)
     ############################
 
-def program2(n: int, W: int, heights: List[int], widths: List[int]) -> Tuple[int, int, List[int]]:
     painting_count = []  # List to store the number of paintings on each platform
     current_platform = [W, 0, 0]  # Initialize the current platform [remaining_width, max_height, painting_count]
     num_platforms = 0  # Counter for the number of platforms used
