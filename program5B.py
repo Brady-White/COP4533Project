@@ -13,33 +13,33 @@ def program5B(n: int, W: int, heights: List[int], widths: List[int]) -> Tuple[in
     int: optimal total height
     List[int]: number of paintings on each platform
     """
-    # Initialize dp array to store (min_cost, num_platforms, platform_distribution) for each painting
+    # Initialized dp array for storing min_cost, num_platforms, platform_distribution for each painting
     dp = [(0, 0, [])] * (n + 1)
 
-    # Iterate over each painting to determine optimal arrangements up to that painting
+    # Iteration over each painting to determine the optimal arrangements up to that painting
     for i in range(1, n + 1):
-        total_width = 0  # Tracks the cumulative width for current platform
-        max_height = 0  # Tracks the maximum height for current platform
+        total_width = 0 # total width of current platform
+        max_height = 0  # max height for current platform
         min_cost, num_platforms, best_distribution = float('inf'), 0, []
 
-        # Check all possible groupings of paintings ending at painting i
+        # Checking all the possible configuations of paintings ending at ith painting
         for j in range(i, 0, -1):
-            total_width += widths[j - 1]  # Add the width of painting j
+            total_width += widths[j - 1]  # add the width
             if total_width > W:
-                break  # Exit loop if platform width is exceeded
-            max_height = max(max_height, heights[j - 1])  # Update the maximum height for the platform
-            current_cost = dp[j - 1][0] + max_height  # Calculate cost if grouping from j to i
+                break  # break loop if width goes too far
+            max_height = max(max_height, heights[j - 1])  # Updated the max height for platform
+            current_cost = dp[j - 1][0] + max_height  #  cost of configuration from j to i
 
-            # Update if the current grouping has a lower cost
+            # Updated if the current config has a lower cost
             if current_cost < min_cost:
                 min_cost = current_cost
-                num_platforms = dp[j - 1][1] + 1  # Increment the platform count
-                best_distribution = dp[j - 1][2] + [i - j + 1]  # Update platform distribution
+                num_platforms = dp[j - 1][1] + 1  # increment the platform counter
+                best_distribution = dp[j - 1][2] + [i - j + 1]  #update platform distribution
 
-        # Update dp[i] with the best configuration found for the first i paintings
+        # update dp[i] with the best configuration found for the first i paintings
         dp[i] = (min_cost, num_platforms, best_distribution)
 
-    # Return the number of platforms used, optimal total height, and platform distribution
+    # Return the # of platforms used, optimal total height, and the platform distribution
     return dp[n][1], dp[n][0], dp[n][2]
 
 
