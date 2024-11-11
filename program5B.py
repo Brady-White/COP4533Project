@@ -45,9 +45,9 @@ def program5B(n: int, W: int, heights: List[int], widths: List[int]) -> Tuple[in
 
 
 if __name__ == '__main__':
-    # n, W = map(int, input().split())
-    # heights = list(map(int, input().split()))
-    # widths = list(map(int, input().split()))
+    n, W = map(int, input().split())
+    heights = list(map(int, input().split()))
+    widths = list(map(int, input().split()))
     m, total_height, num_paintings = program5B(n, W, heights, widths)
     print(m)
     print(total_height)
