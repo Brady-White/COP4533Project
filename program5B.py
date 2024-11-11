@@ -22,7 +22,7 @@ def program5B(n: int, W: int, heights: List[int], widths: List[int]) -> Tuple[in
         max_height = 0  # Tracks the maximum height for current platform
         min_cost, num_platforms, best_distribution = float('inf'), 0, []
 
-        # Check all possible groupings of paintings ending at painting `i`
+        # Check all possible groupings of paintings ending at painting i
         for j in range(i, 0, -1):
             total_width += widths[j - 1]  # Add the width of painting j
             if total_width > W:
