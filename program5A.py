@@ -14,43 +14,43 @@ def program5A(n: int, W: int, heights: List[int], widths: List[int]) -> Tuple[in
     int: optimal total height
     List[int]: number of paintings on each platform
     """
-    memo = {}  # Memoization dictionary to store computed results for subproblems
+    memo = {}  # Memoization dict for storing the results of the subproblems
 
-    # Recursive function to solve subproblems from painting i to the beginning
+    #Recursive function for solving the subproblems from  ith painting to the beginning
     def dp(i: int) -> Tuple[int, int, List[int]]:
         if i in memo:
-            return memo[i]  # Return memoized result if already computed
+            return memo[i]  # Return the memoization if already there
 
-        min_cost = float('inf')  # Initialize minimum cost as infinity
+        min_cost = float('inf')  # Initialized min cost as inf
         platforms_used = 0
         platform_config = []
 
-        width_sum = 0  # Cumulative width of current platform grouping
-        max_height = 0  # Maximum height within current platform grouping
+        width_sum = 0  # Sum of width of current platform
+        max_height = 0  # Max height in current platform.
 
-        # Iterate backwards to evaluate valid platforms ending at painting i
+        # Iterate back to determine the valid platforms ending at the painting i
         for j in range(i, -1, -1):
             width_sum += widths[j]
             if width_sum > W:
-                break  # Stop if platform width is exceeded
+                break  # break if goes beyond platform width
 
             max_height = max(max_height, heights[j])
 
-            # Recursive call for subproblem and cost calculation
+            # Recursively call for subproblem
             prev_cost, prev_platforms, prev_config = dp(j - 1) if j > 0 else (0, 0, [])
             total_cost = prev_cost + max_height
 
-            # Update if current configuration has a lower cost
+            # Updated if the current configuration has a lower cost
             if total_cost < min_cost:
                 min_cost = total_cost
                 platforms_used = prev_platforms + 1
                 platform_config = prev_config + [i - j + 1]
 
-        # Store computed result in memo dictionary
+        # Storing the result in memo dict
         memo[i] = (min_cost, platforms_used, platform_config)
         return memo[i]
 
-    # Solve the problem starting from the last painting
+    # Calling function for the problem starting from the last painting
     total_cost, num_platforms, platform_list = dp(n - 1)
     return num_platforms, total_cost, platform_list
 
